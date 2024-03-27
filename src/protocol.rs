@@ -7,7 +7,18 @@ use serde::{Deserialize, Serialize};
 pub enum ClientMessage {
     Join { name: String },
     Disconnect {},
-    ChatMessage { message: String },
+    Player(PlayerState),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PlayerState {
+    player_id: u64,
+    position_x: i32,
+    position_y: i32,
+    orientation_degrees: u32,
+    strafing: i8, // -1, 0, 1 left/not/right
+    turning: i8,  // -1, 0, 1, left/not/right
+    forward: i8,  // -1, 0, 1, backward/not/forward
 }
 
 // Messages from the server
@@ -20,9 +31,8 @@ pub enum ServerMessage {
     ClientDisconnected {
         client_id: u64,
     },
-    ChatMessage {
-        client_id: u64,
-        message: String,
+    Entities {
+        players: Vec<PlayerState>,
     },
     InitClient {
         client_id: u64,
